@@ -1,24 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import BreweryList from './components/BreweryList'
+import axios from 'axios'
 
 function App() {
+
+  const url = `https://api.openbrewerydb.org/breweries`
+  const [breweries, setBreweries] = useState({breweries: []})
+  const [loading, setLoading] = useState(true)
+
+
+  useEffect(() => {
+    const fetchBreweries = async () => {
+      setLoading(true)
+      const result = await axios(url);
+      setBreweries(result.data);
+      setLoading(false)
+    };
+    fetchBreweries();
+  }, []);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {loading ? <h1>...Loading</h1> : <BreweryList breweries={breweries} />}
     </div>
   );
 }
